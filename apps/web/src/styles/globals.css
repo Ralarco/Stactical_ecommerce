@@ -1,0 +1,96 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@300;400;500;600;700&display=swap');
+
+/* ─── Source scanning for monorepo ─── */
+@source "../**/*.{ts,tsx}";
+@source "../../components/**/*.{ts,tsx}";
+@source "../../features/**/*.{ts,tsx}";
+
+/* ─── Tactical Elite Design System ─── */
+/* Source: Stitch — Editorial Gold Accent */
+/*
+ * IMPORTANT: Do NOT define --spacing-* tokens here.
+ * Tailwind v4 uses --spacing-{n} internally for ALL utilities (p-*, m-*, gap-*, etc).
+ * Custom values would override the default scale:
+ *   Default: p-4 = 16px, p-6 = 24px, p-8 = 32px
+ *   Custom (broken): p-4 = 4px, p-8 = 8px ← way too small!
+ * Instead, use Tailwind's default spacing scale which is based on 4px increments.
+ */
+
+@theme {
+  /* ── Core Palette ── */
+  --color-canvas-ice: #e5e7eb;
+  --color-pure-white: #ffffff;
+  --color-ink-black: #000000;
+  --color-fog-gray: #efefef;
+  --color-steel-gray: #6b7280;
+
+  /* ── Gold Accent (Editorial) ── */
+  --color-gold: #c9a96e;
+  --color-gold-light: #d4bc8e;
+  --color-gold-muted: #a8905c;
+
+  /* ── Surface System ── */
+  --color-surface: #f9f9f9;
+  --color-surface-dim: #dadada;
+  --color-surface-container: #eeeeee;
+  --color-surface-container-high: #e8e8e8;
+  --color-on-surface: #1b1b1b;
+  --color-on-surface-variant: #4c4546;
+
+  /* ── Semantic ── */
+  --color-error: #ba1a1a;
+  --color-on-error: #ffffff;
+
+  /* ── Typography ── */
+  --font-heading: 'Hanken Grotesk', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-body: 'Hanken Grotesk', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.5;
+  letter-spacing: -0.02em;
+  color: var(--color-ink-black);
+  background-color: var(--color-surface);
+}
+
+/* ─── Focus Styles ─── */
+:focus-visible {
+  outline: 2px solid var(--color-gold);
+  outline-offset: 2px;
+}
+
+/* ─── Selection ─── */
+::selection {
+  background-color: var(--color-gold);
+  color: var(--color-ink-black);
+}
+
+/* ─── Smooth transitions ─── */
+a,
+button,
+input,
+select,
+textarea {
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ─── Scrollbar ─── */
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-steel-gray);
+  border-radius: 2px;
+}
