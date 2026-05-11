@@ -32,7 +32,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   // Load session from local storage on mount
   useEffect(() => {
-    const storedUser = localStorage.getItem('stactical_mock_session');
+    const storedUser = localStorage.getItem('stactical_mock_session:v1');
     if (storedUser) {
       try {
         setUser(JSON.parse(storedUser));
@@ -45,12 +45,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const login = useCallback((userData: AuthUser) => {
     setUser(userData);
-    localStorage.setItem('stactical_mock_session', JSON.stringify(userData));
+    localStorage.setItem('stactical_mock_session:v1', JSON.stringify(userData));
   }, []);
 
   const logout = useCallback(() => {
     setUser(null);
-    localStorage.removeItem('stactical_mock_session');
+    localStorage.removeItem('stactical_mock_session:v1');
   }, []);
 
   // Avoid hydration mismatch by not rendering authenticated UI until client is loaded

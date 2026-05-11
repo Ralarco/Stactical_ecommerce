@@ -1,43 +1,90 @@
 'use client';
 
-import { useState } from 'react';
+import { useReducer, useEffect } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/features/auth/context/AuthContext';
+import { loginUser } from '@/features/auth/actions/login';
+
+interface LoginState {
+  email: string;
+  password: string;
+  error: string;
+  success: string;
+  loading: boolean;
+}
+
+type Action =
+  | { type: 'SET_FIELD'; field: 'email' | 'password'; value: string }
+  | { type: 'SET_ERROR'; value: string }
+  | { type: 'SET_SUCCESS'; value: string }
+  | { type: 'SET_LOADING'; value: boolean }
+  | { type: 'START_LOGIN' };
+
+const initialState: LoginState = {
+  email: '',
+  password: '',
+  error: '',
+  success: '',
+  loading: false,
+};
+
+function loginReducer(state: LoginState, action: Action): LoginState {
+  switch (action.type) {
+    case 'SET_FIELD':
+      return { ...state, [action.field]: action.value };
+    case 'SET_ERROR':
+      return { ...state, error: action.value, loading: false };
+    case 'SET_SUCCESS':
+      return { ...state, success: action.value, error: '', loading: false };
+    case 'SET_LOADING':
+      return { ...state, loading: action.value };
+    case 'START_LOGIN':
+      return { ...state, error: '', success: '', loading: true };
+    default:
+      return state;
+  }
+}
 
 export default function LoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { login } = useAuth();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [state, dispatch] = useReducer(loginReducer, initialState);
+  const { email, password, error, success, loading } = state;
+
+  useEffect(() => {
+    if (searchParams.get('registered') === 'true') {
+      dispatch({ type: 'SET_SUCCESS', value: '¡Cuenta creada exitosamente! Por favor, inicia sesión.' });
+    }
+  }, [searchParams]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setError('');
-    setSuccess('');
-    setLoading(true);
+    dispatch({ type: 'START_LOGIN' });
+
     try {
-      await new Promise((r) => setTimeout(r, 800));
-      if (email === 'admin@stactical.com' && password === 'admin123') {
-        login({ id: '1', name: 'Admin User', email: 'admin@stactical.com', role: 'ADMIN' });
-        setSuccess('¡Inicio de sesión exitoso! Redirigiendo...');
-        await new Promise((r) => setTimeout(r, 1200));
-        router.push('/');
-      } else if (email === 'customer@stactical.com' && password === 'customer123') {
-        login({ id: '2', name: 'Cliente de Prueba', email: 'customer@stactical.com', role: 'CUSTOMER' });
-        setSuccess('¡Inicio de sesión exitoso! Redirigiendo...');
+      const data = new FormData();
+      data.append('email', email);
+      data.append('password', password);
+
+      const result = await loginUser(data);
+
+      if (result.success && result.user) {
+        login({ 
+          id: result.user.id, 
+          name: result.user.name, 
+          email: result.user.email, 
+          role: result.user.role as any 
+        });
+        dispatch({ type: 'SET_SUCCESS', value: '¡Inicio de sesión exitoso! Redirigiendo...' });
         await new Promise((r) => setTimeout(r, 1200));
         router.push('/');
       } else {
-        setError('Credenciales inválidas. Intenta nuevamente.');
+        dispatch({ type: 'SET_ERROR', value: result.error || 'Credenciales inválidas. Intenta nuevamente.' });
       }
     } catch {
-      setError('Error de conexión. Intenta más tarde.');
-    } finally {
-      setLoading(false);
+      dispatch({ type: 'SET_ERROR', value: 'Error de conexión. Intenta más tarde.' });
     }
   }
 
@@ -83,7 +130,7 @@ export default function LoginForm() {
           <form onSubmit={handleSubmit} className="flex flex-col gap-6">
             <div className="flex flex-col gap-2">
               <label htmlFor="login-email" className="text-xs font-semibold tracking-[0.15em] uppercase text-gold">Email</label>
-              <input id="login-email" type="email" value={email} onChange={(e) => setEmail(e.target.value)}
+              <input id="login-email" type="email" value={email} onChange={(e) => dispatch({ type: 'SET_FIELD', field: 'email', value: e.target.value })}
                 placeholder="tu@email.com" required autoComplete="email" disabled={!!success} className={inputClass} />
             </div>
 
@@ -92,7 +139,7 @@ export default function LoginForm() {
                 <label htmlFor="login-password" className="text-xs font-semibold tracking-[0.15em] uppercase text-gold">Contraseña</label>
                 <Link href="/forgot-password" className="text-xs text-pure-white/30 no-underline hover:text-gold">¿Olvidaste?</Link>
               </div>
-              <input id="login-password" type="password" value={password} onChange={(e) => setPassword(e.target.value)}
+              <input id="login-password" type="password" value={password} onChange={(e) => dispatch({ type: 'SET_FIELD', field: 'password', value: e.target.value })}
                 placeholder="••••••••" required autoComplete="current-password" disabled={!!success} className={inputClass} />
             </div>
 

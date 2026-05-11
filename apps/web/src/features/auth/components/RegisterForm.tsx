@@ -4,6 +4,8 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
+import { registerUser } from '@/features/auth/actions/register';
+
 export default function RegisterForm() {
   const router = useRouter();
   const [formData, setFormData] = useState({
@@ -19,14 +21,39 @@ export default function RegisterForm() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError('');
-    if (formData.password.length < 8) { setError('La contraseña debe tener al menos 8 caracteres.'); return; }
-    if (formData.password !== formData.confirmPassword) { setError('Las contraseñas no coinciden.'); return; }
+    
+    if (formData.password.length < 8) { 
+      setError('La contraseña debe tener al menos 8 caracteres.'); 
+      return; 
+    }
+    
+    if (formData.password !== formData.confirmPassword) { 
+      setError('Las contraseñas no coinciden.'); 
+      return; 
+    }
+    
     setLoading(true);
+    
     try {
-      await new Promise((r) => setTimeout(r, 1000));
-      router.push('/login');
+      const data = new FormData();
+      data.append('name', formData.name);
+      data.append('email', formData.email);
+      data.append('password', formData.password);
+      if (formData.company) {
+        data.append('company', formData.company);
+      }
+
+      const result = await registerUser(data);
+
+      if (result.success) {
+        // Successful registration
+        router.push('/login?registered=true');
+      } else {
+        // Display error from server
+        setError(result.error || 'Error al crear la cuenta. Intenta más tarde.');
+      }
     } catch {
-      setError('Error al crear la cuenta. Intenta más tarde.');
+      setError('Error de conexión. Intenta más tarde.');
     } finally {
       setLoading(false);
     }

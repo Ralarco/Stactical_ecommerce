@@ -9,6 +9,7 @@ out/
 
 # Environment
 .env
+.env.example
 .env.local
 .env.*.local
 
@@ -36,3 +37,9 @@ coverage/
 
 # Sentry
 .sentryclirc
+
+# Specs
+spec.md
+implementation_plan.md
+ecommerce_sap_specification.docx
+specs/

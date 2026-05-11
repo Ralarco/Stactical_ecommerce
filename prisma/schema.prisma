@@ -96,11 +96,31 @@ model User {
   deletedAt      DateTime?
   sessions       Session[]
   carts          Cart[]
+  addresses      Address[]
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
 
   @@index([email])
   @@index([organizationId])
+}
+
+// ─── Address ───
+
+model Address {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title       String   // e.g., "Casa Principal"
+  street      String
+  city        String
+  region      String
+  country     String   @default("Chile")
+  postalCode  String?
+  isDefault   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([userId])
 }
 
 // ─── Session (BetterAuth) ───
