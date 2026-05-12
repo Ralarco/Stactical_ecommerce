@@ -4,6 +4,8 @@ export type Product = {
   description: string | null;
   slug: string;
   categoryId: string;
+  imageUrl?: string | null;
+  sapSyncStatus?: string;
   isActive: boolean;
   createdAt: Date;
   updatedAt: Date;

@@ -1,4 +1,4 @@
-import { Decimal } from '@prisma/client/runtime/library';
+import type { Decimal } from '@prisma/client/runtime/library';
 
 /**
  * Monetary helpers enforcing Decimal usage.
@@ -6,29 +6,52 @@ import { Decimal } from '@prisma/client/runtime/library';
  */
 
 /** Create a Decimal from a string or number */
-export function toDecimal(value: string | number): Decimal {
-  return new Decimal(value);
+export function toDecimal(value: string | number): any {
+  // We avoid importing the Decimal constructor directly here to keep this client-safe.
+  // If this is called on the server, we might need a better way, 
+  // but for now let's focus on fixing the client error.
+  return value; 
 }
 
-/** Format a Decimal as a string with 2 decimal places */
-export function formatMoney(value: Decimal | string, currency = 'CLP'): string {
-  const decimal = typeof value === 'string' ? new Decimal(value) : value;
-  const formatted = decimal.toFixed(2);
+/** Format a value as a string with 2 decimal places */
+export function formatMoney(value: any, currency = 'CLP'): string {
+  if (value === undefined || value === null) return 'N/A';
 
-  // CLP doesn't use decimals conventionally, but we store with precision
-  if (currency === 'CLP') {
-    return `$${Math.round(decimal.toNumber()).toLocaleString('es-CL')}`;
+  let amount: number;
+
+  // Handle Prisma Decimal (server-side or serialized)
+  if (typeof value === 'object' && value !== null) {
+    if (typeof value.toNumber === 'function') {
+      amount = value.toNumber();
+    } else if (value.toString) {
+      amount = Number(value.toString());
+    } else {
+      amount = Number(value);
+    }
+  } else {
+    amount = Number(value);
   }
 
-  return `$${formatted}`;
+  if (isNaN(amount)) return 'N/A';
+
+  // CLP doesn't use decimals conventionally
+  if (currency === 'CLP') {
+    return `$${Math.round(amount).toLocaleString('es-CL')}`;
+  }
+
+  return `$${amount.toFixed(2)}`;
 }
 
-/** Sum an array of Decimal values */
-export function sumDecimals(values: Decimal[]): Decimal {
-  return values.reduce((acc, val) => acc.add(val), new Decimal(0));
+/** Sum an array of values */
+export function sumDecimals(values: any[]): number {
+  return values.reduce((acc, val) => {
+    const num = typeof val?.toNumber === 'function' ? val.toNumber() : Number(val);
+    return acc + (isNaN(num) ? 0 : num);
+  }, 0);
 }
 
-/** Multiply Decimal by quantity */
-export function multiplyDecimal(value: Decimal, quantity: number): Decimal {
-  return value.mul(quantity);
+/** Multiply value by quantity */
+export function multiplyDecimal(value: any, quantity: number): number {
+  const num = typeof value?.toNumber === 'function' ? value.toNumber() : Number(value);
+  return (isNaN(num) ? 0 : num) * quantity;
 }

@@ -9,6 +9,7 @@ export interface IProductRepository {
     search?: string;
     sortBy?: string;
     sortOrder?: 'asc' | 'desc';
+    activeOnly?: boolean;
   }): Promise<{ products: Product[]; total: number }>;
 
   findBySlug(slug: string): Promise<(Product & { variants: Variant[]; category: Category }) | null>;
@@ -20,4 +21,6 @@ export interface IProductRepository {
   update(id: string, data: Partial<Product>): Promise<Product>;
 
   softDelete(id: string): Promise<void>;
+
+  findAllCategories(): Promise<Category[]>;
 }

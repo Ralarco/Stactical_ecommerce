@@ -70,15 +70,15 @@ enum PaymentStatus {
 // ─── Organization (B2B-ready) ───
 
 model Organization {
-  id           String   @id @default(cuid())
+  id           String    @id @default(cuid())
   name         String
-  rut          String?  @unique
+  rut          String?   @unique
   contactEmail String?
-  isActive     Boolean  @default(true)
+  isActive     Boolean   @default(true)
   deletedAt    DateTime?
   users        User[]
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
 }
 
 // ─── User ───
@@ -107,18 +107,18 @@ model User {
 // ─── Address ───
 
 model Address {
-  id          String   @id @default(cuid())
-  userId      String
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  title       String   // e.g., "Casa Principal"
-  street      String
-  city        String
-  region      String
-  country     String   @default("Chile")
-  postalCode  String?
-  isDefault   Boolean  @default(false)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title      String // e.g., "Casa Principal"
+  street     String
+  city       String
+  region     String
+  country    String   @default("Chile")
+  postalCode String?
+  isDefault  Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
   @@index([userId])
 }
@@ -159,6 +159,8 @@ model Product {
   categoryId  String
   category    Category  @relation(fields: [categoryId], references: [id])
   variants    Variant[]
+  imageUrl    String?
+  sapSyncStatus SyncStatus @default(NOT_REQUIRED)
   isActive    Boolean   @default(true)
   deletedAt   DateTime?
   createdAt   DateTime  @default(now())

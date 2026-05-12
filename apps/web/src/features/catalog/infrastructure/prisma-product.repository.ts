@@ -16,8 +16,8 @@ export class PrismaProductRepository implements IProductRepository {
     const skip = (page - 1) * pageSize;
 
     const where = {
-      isActive: true,
       deletedAt: null,
+      ...(params.activeOnly !== false && { isActive: true }),
       ...(categorySlug && { category: { slug: categorySlug } }),
       ...(search && {
         OR: [
@@ -75,5 +75,13 @@ export class PrismaProductRepository implements IProductRepository {
       where: { id },
       data: { isActive: false, deletedAt: new Date() },
     });
+  }
+
+  async findAllCategories() {
+    const categories = await prisma.category.findMany({
+      where: { isActive: true, deletedAt: null },
+      orderBy: { name: 'asc' },
+    });
+    return categories as unknown as Category[];
   }
 }
