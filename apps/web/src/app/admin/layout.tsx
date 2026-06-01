@@ -35,7 +35,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             STACTICAL <span className="text-gold">ADMIN</span>
           </Link>
         </div>
-        
+
         <div className="flex flex-col gap-2 p-4">
           <p className="px-4 pb-2 pt-4 text-xs font-semibold tracking-[0.2em] text-pure-white/40 uppercase">
             Gestión
@@ -46,11 +46,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               <Link
                 key={item.name}
                 href={item.href}
-                className={`flex items-center gap-3 rounded px-4 py-3 text-xs font-medium tracking-[0.1em] uppercase transition-colors ${
-                  isActive
+                className={`flex items-center gap-3 rounded px-4 py-3 text-xs font-medium tracking-[0.1em] uppercase transition-colors ${isActive
                     ? 'bg-pure-white/10 text-gold'
                     : 'text-pure-white/60 hover:bg-pure-white/5 hover:text-pure-white'
-                }`}
+                  }`}
               >
                 <svg className="h-4 w-4 shrink-0" fill="currentColor" viewBox="0 0 24 24">
                   <path d={item.icon} />
@@ -76,14 +75,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
               </svg>
-              Ir a la Tienda
+              Volver a la Tienda
             </Link>
             <span className="text-xs tracking-wider text-pure-white/40 uppercase">
               {user?.name}
             </span>
           </div>
         </header>
-        
+
         {/* Page Content */}
         <div className="flex-1 p-6 sm:p-8 lg:p-12">
           <div className="mx-auto w-full max-w-[1280px]">
