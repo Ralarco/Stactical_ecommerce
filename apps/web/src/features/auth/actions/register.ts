@@ -7,7 +7,7 @@ export async function registerUser(data: FormData) {
   const name = data.get('name') as string;
   const email = data.get('email') as string;
   const password = data.get('password') as string;
-  const company = data.get('company') as string; // Optional
+  const company = data.get('company') as string; // Opcional
 
   if (!name || !email || !password) {
     return { success: false, error: 'Faltan campos obligatorios' };

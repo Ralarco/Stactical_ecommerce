@@ -37,6 +37,9 @@ export async function loginUser(data: FormData) {
 
     // Verify password
     const [salt, storedKey] = user.hashedPassword.split(':');
+    if (!salt || !storedKey) {
+      return { success: false, error: 'Credenciales inválidas' };
+    }
     const derivedKey = crypto.scryptSync(password, salt, 64).toString('hex');
 
     if (derivedKey !== storedKey) {

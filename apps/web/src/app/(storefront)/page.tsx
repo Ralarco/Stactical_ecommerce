@@ -11,13 +11,12 @@ export default function HomePage() {
           backgroundSize: '60px 60px',
         }} />
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(201,169,110,0.06)_0%,transparent_70%)]" />
-
         <div className="relative mx-auto w-full max-w-[768px] text-center">
           <p className="text-xs font-semibold tracking-[0.4em] text-gold uppercase">
             Diseñado para Extremos
           </p>
           <div className="mx-auto mt-6 h-[1px] w-16 bg-gold" />
-          <h1 className="mt-10 font-heading text-6xl font-bold tracking-tighter leading-none text-pure-white sm:text-7xl md:text-8xl lg:text-9xl">
+          <h1 className="mt-10 font-heading text-6xl font-bold tracking-tighter leading-none text-pure-white sm:text-6xl md:text-6xl lg:text-7xl">
             INQUEBRANTABLE
           </h1>
           <p className="mx-auto mt-8 max-w-xl text-sm font-light tracking-wider leading-relaxed text-pure-white/40 uppercase">

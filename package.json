@@ -18,13 +18,19 @@
     "clean": "turbo clean"
   },
   "devDependencies": {
-    "turbo": "^2.5.0",
-    "typescript": "^5.7.0",
+    "eslint": "^9.17.0",
     "prettier": "^3.4.0",
-    "eslint": "^9.17.0"
+    "turbo": "^2.5.0",
+    "typescript": "^5.7.0"
   },
   "engines": {
     "node": ">=20.0.0"
   },
-  "packageManager": "npm@10.8.0"
+  "packageManager": "npm@10.8.0",
+  "dependencies": {
+    "@react-three/drei": "^10.7.7",
+    "@react-three/fiber": "^9.6.1",
+    "framer-motion": "^12.40.0",
+    "three": "^0.184.0"
+  }
 }
